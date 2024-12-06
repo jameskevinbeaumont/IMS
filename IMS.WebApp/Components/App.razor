@@ -1,0 +1,33 @@
+﻿@* Single Page Application framework - the 'single page' refers to THIS page!  *@
+@* This is sometimes called the root component *@
+@* Everything is static in here EXCEPT <Routes /> *@
+@* SECOND *@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <link rel="stylesheet" href="bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="app.css" />
+    <link rel="stylesheet" href="IMS.WebApp.styles.css" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <HeadOutlet />
+</head>
+
+<body>
+    @* Routes will be replaced by the MainLayout HTML plus the page component HTML *@
+    @* This is responsible for mapping the URL in the HTTP request to a particular
+       component that acts as a page *@
+    @* The MainLayout HTML, along with the component HTML put at the @Body placeholder
+       will be placed here where <Routes /> is located *@
+    <Routes />
+    @* If you remove the following line, the Blazor SSR becomes completely static
+       and will reload the entire page when you navigate between page components.
+       With this in place, it is intercepting the request and performing what is
+       referred to as "enhanced navigation" and partial page rendering. *@
+    <script src="_framework/blazor.web.js"></script>
+</body>
+
+</html>

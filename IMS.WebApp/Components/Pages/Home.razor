@@ -1,0 +1,35 @@
+﻿@page "/"
+
+@* Inject the ViewInventoriesByNameUseCase use case into our component *@
+@inject IViewInventoriesByNameUseCase ViewInventoriesByNameUseCase
+
+@* HTML Section - We can also use Razor syntax which includes C# *@
+<PageTitle>Test Page</PageTitle>
+
+<br />
+<br />
+
+<ul>
+    @if (inventories is not null && inventories.Count > 0)
+    {
+        foreach(var inv in inventories)
+        {
+            <li>
+                @inv.InventoryName
+            </li>
+        }
+    }
+</ul>
+
+@* C# Section *@
+@code {
+    // Declare List of Inventory objects that is nullable (?)
+    private List<Inventory>? inventories;
+
+    protected override async Task OnInitializedAsync()
+    {
+        inventories = (await ViewInventoriesByNameUseCase.ExecuteAsync()).ToList();
+        //inventories = (await ViewInventoriesByNameUseCase.ExecuteAsync("whe")).ToList();
+        //inventories = (await ViewInventoriesByNameUseCase.ExecuteAsync("xyz")).ToList();
+    }
+}
