@@ -3,6 +3,10 @@ using IMS.UseCases.PluginInterfaces;
 
 namespace IMS.Plugins.InMemory
 {
+    // If you see a red squiggly line under the interface, it may mean that we are not
+    // this class is not implementing all of the methods defined in the interface.
+    // To fix - Ctrl+"." and hit enter on "Implement interface" - after it implements
+    // the method here, delete the "throw..." line and write the code to implement the method.
     public class InventoryRepository : IInventoryRepository
     {
         private List<Inventory> _inventories;
@@ -13,11 +17,29 @@ namespace IMS.Plugins.InMemory
             _inventories =
             [
                 new() { InventoryID = 1, InventoryName = "Bike Seat", Quantity = 10, Price = 2 },
-                new Inventory { InventoryID = 1, InventoryName = "Bike Body", Quantity = 10, Price = 15 },
-                new Inventory { InventoryID = 1, InventoryName = "Bike Wheels", Quantity = 20, Price = 8 },
-                new Inventory { InventoryID = 1, InventoryName = "Bike Pedals", Quantity = 20, Price = 1 }
+                new Inventory { InventoryID = 2, InventoryName = "Bike Body", Quantity = 10, Price = 15 },
+                new Inventory { InventoryID = 3, InventoryName = "Bike Wheels", Quantity = 20, Price = 8 },
+                new Inventory { InventoryID = 4, InventoryName = "Bike Pedals", Quantity = 20, Price = 1 }
 
             ];
+        }
+
+        public Task AddInventoryAsync(Inventory inventory)
+        {
+            // Defensive programming - the inventory passed may have the same name as one that
+            // already exists, so we need to check for that.
+            // So if it already exists, just return that the task is completed...
+            if (_inventories.Any(x => x.InventoryName.Equals(inventory.InventoryName, StringComparison.OrdinalIgnoreCase))) 
+                return Task.CompletedTask;
+
+            // This in memory inventory list does not generate ID's automatically so we have to
+            // generate the new ID
+            var maxID = _inventories.Max(x => x.InventoryID);
+            inventory.InventoryID = maxID + 1;
+
+            //...otherwise, add the new inventory
+            _inventories.Add(inventory);
+            return Task.CompletedTask;
         }
 
         public async Task<IEnumerable<Inventory>> GetInventoriesByNameAsync(string name)

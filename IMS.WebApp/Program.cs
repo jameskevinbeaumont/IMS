@@ -25,6 +25,9 @@ builder.Services.AddSingleton<IInventoryRepository, InventoryRepository>();
 // We use AddTransient for the use case
 builder.Services.AddTransient<IViewInventoriesByNameUseCase, ViewInventoriesByNameUseCase>();
 
+// Register the IAddInventoryUseCase interface and it's implementation (AddInventoryUseCase)
+builder.Services.AddTransient<IAddInventoryUseCase, AddInventoryUseCase>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

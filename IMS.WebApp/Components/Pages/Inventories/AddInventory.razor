@@ -1,0 +1,64 @@
+﻿@page "/addinventory"
+
+@inject IAddInventoryUseCase AddInventoryUseCase
+@inject NavigationManager NavigationManager
+
+<h3>Add Inventory</h3>
+<br />
+
+@* The EditForm is going to collect the data for the type of Inventory  *@
+<EditForm Model="inventory" FormName="formInventory" OnValidSubmit="Save">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    @* Where you place the ValidationSummary component dictates where the
+       validate messages will be displayed *@
+    <ValidationSummary></ValidationSummary>
+
+    <div class="mb-3">
+        <label for="name">Inventory Name</label>
+        <InputText 
+            id="name"
+            @bind-Value="inventory.InventoryName"
+            class="form-control">
+        </InputText>
+        <ValidationMessage For="() => inventory.InventoryName"></ValidationMessage>
+    </div>
+
+    <div class="mb-3">
+        <label for="quantity">Quantity</label>
+        <InputNumber id="quantity"
+                     @bind-Value="inventory.Quantity"
+                     class="form-control">
+        </InputNumber>
+        <ValidationMessage For="() => inventory.Quantity"></ValidationMessage>
+    </div>
+
+    <div class="mb-3">
+        <label for="price">Price</label>
+        <InputNumber id="price"
+                     @bind-Value="inventory.Price"
+                     class="form-control">
+        </InputNumber>
+        <ValidationMessage For="() => inventory.Price"></ValidationMessage>
+
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Save</button>&nbsp;
+    <a href="/inventories" class="btn btn-primary">Cancel</a>
+</EditForm>
+
+@code {
+    // We need SupplyParameterFromForm attribute to get the data from the form
+    // after the submit...but this also requires that our inventory
+    // variable to be a property, so we add the get and the set.
+    [SupplyParameterFromForm]
+    private Inventory inventory { get; set; } = new Inventory();
+
+    // This method handles the HTTP Post request when the user clicks the
+    // above "Save" button via the submit of the form
+    private async Task Save()
+    {
+        await AddInventoryUseCase.ExecuteAsync(inventory);
+
+        NavigationManager.NavigateTo("/inventories");
+    }
+}
