@@ -24,6 +24,32 @@ namespace IMS.Plugins.InMemory
             ];
         }
 
+        public async Task<Inventory> GetInventoryByIDAsync(int inventoryID)
+        {
+            return await Task.FromResult(_inventories.First(x => x.InventoryID == inventoryID));
+        }
+        public Task UpdateInventoryAsync(Inventory inventory)
+        {
+            // Defensive programming - here we are checking if the name passed in matches the name
+            // on an inventory ID that is NOT the inventory ID we are updating - we are not allowing
+            // the user to change the name of the inventory item they are updating with the same name
+            // as another inventory item that already exists.
+            if (_inventories.Any(x => x.InventoryID != inventory.InventoryID && 
+                x.InventoryName.Equals(inventory.InventoryName, StringComparison.OrdinalIgnoreCase)))
+                return Task.CompletedTask;
+
+            // We are looking for a match in the inventory repository based on the inventory ID.
+            var invToUpdate = _inventories.FirstOrDefault(x => x.InventoryID == inventory.InventoryID);
+            if (invToUpdate != null)
+            {
+                invToUpdate.InventoryName = inventory.InventoryName;
+                invToUpdate.Quantity = inventory.Quantity;
+                invToUpdate.Price = inventory.Price;
+            }
+
+            return Task.CompletedTask;
+        }
+
         public Task AddInventoryAsync(Inventory inventory)
         {
             // Defensive programming - the inventory passed may have the same name as one that

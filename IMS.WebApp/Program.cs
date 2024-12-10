@@ -28,6 +28,12 @@ builder.Services.AddTransient<IViewInventoriesByNameUseCase, ViewInventoriesByNa
 // Register the IAddInventoryUseCase interface and it's implementation (AddInventoryUseCase)
 builder.Services.AddTransient<IAddInventoryUseCase, AddInventoryUseCase>();
 
+// Register the IEditInventoryUseCase interface and it's implementation (EditInventoryUseCase)
+builder.Services.AddTransient<IEditInventoryUseCase, EditInventoryUseCase>();
+
+// Register the IViewInventoryByIDUseCase interface and it's implementation (ViewInventoryByIDUseCase)
+builder.Services.AddTransient<IViewInventoryByIDUseCase, ViewInventoryByIDUseCase>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

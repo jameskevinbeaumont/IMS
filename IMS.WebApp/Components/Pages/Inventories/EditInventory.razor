@@ -1,0 +1,95 @@
+﻿@* The curly braces {} defines a routing parameter *@
+@page "/editinventory/{invID:int}"
+
+@inject IViewInventoryByIDUseCase ViewInventoryByIDUseCase
+@inject IEditInventoryUseCase EditInventoryUseCase
+@inject NavigationManager NavigationManager
+
+<h3>Edit Inventory</h3>
+<br />
+
+@if(inventory != null)
+{
+    @* The EditForm is going to collect the data for the type of Inventory  *@
+    <EditForm Model="inventory" FormName="formInventory" OnValidSubmit="Update">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        @* Where you place the ValidationSummary component dictates where the
+           validate messages will be displayed *@
+        <ValidationSummary></ValidationSummary>
+
+        <InputNumber @bind-Value="inventory.InventoryID" hidden></InputNumber>
+
+        <div class="mb-3">
+            <label for="name">Inventory Name</label>
+            <InputText id="name"
+                       @bind-Value="inventory.InventoryName"
+                       class="form-control">
+            </InputText>
+            <ValidationMessage For="() => inventory.InventoryName"></ValidationMessage>
+        </div>
+
+        <div class="mb-3">
+            <label for="quantity">Quantity</label>
+            <InputNumber id="quantity"
+                         @bind-Value="inventory.Quantity"
+                         class="form-control">
+            </InputNumber>
+            <ValidationMessage For="() => inventory.Quantity"></ValidationMessage>
+        </div>
+
+        <div class="mb-3">
+            <label for="price">Price</label>
+            <InputNumber id="price"
+                         @bind-Value="inventory.Price"
+                         class="form-control">
+            </InputNumber>
+            <ValidationMessage For="() => inventory.Price"></ValidationMessage>
+
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary">Update</button>&nbsp;
+        <a href="/inventories" class="btn btn-primary">Cancel</a>
+    </EditForm>
+}
+
+@code {
+    // Routing Parameter
+    [Parameter]
+    public int InvID { get; set; }
+
+    // We need SupplyParameterFromForm attribute to get the data from the form
+    // after the submit...but this also requires that our inventory
+    // variable to be a property, so we add the get and the set.
+    [SupplyParameterFromForm]
+    private Inventory? inventory { get; set; }
+
+    // Only when the rotuing parameter has been received 
+    // can we load the actual inventory item data
+    // We don't really need any defensive programming here
+    // to check for an invID because this override lifecycle
+    // method will only get called when we actually have the
+    // passed routing parameter value.
+    protected override async Task OnParametersSetAsync()
+    {
+        // The first time this form is loaded, the inventory object is null
+        // so therefore it will call ViewInventoryByIDUseCase.ExecuteAsync 
+        // but because we are performing an HTTP Post to the same URL via
+        // the Update button, the URL contains a routing parameter and that 
+        // triggers the OnParameterSetAsync method which reloads the inventory
+        // and wipes out the values you just changed on the form...so my NOT 
+        // initializing the inventory above, making it nullable (?) and checking
+        // to see if it is or is not null here (??=), we can control whether or
+        // not the ViewInventoryByIDUseCase.ExecuteAsync is called.
+        inventory ??= await ViewInventoryByIDUseCase.ExecuteAsync(InvID);
+    }
+
+    private async Task Update()
+    {
+        if (inventory != null)
+        {
+            await EditInventoryUseCase.ExecuteAsync(inventory);
+
+            NavigationManager.NavigateTo("/inventories");            
+        }
+    }
+}

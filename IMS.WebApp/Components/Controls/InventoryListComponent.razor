@@ -25,6 +25,7 @@
     // Declare List of Inventory objects that is nullable (?)
     private List<Inventory>? inventories;
 
+    // Loading the inventories when the component initializes
     protected override async Task OnInitializedAsync()
     {
         inventories = (await ViewInventoriesByNameUseCase.ExecuteAsync()).ToList();
