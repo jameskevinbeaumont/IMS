@@ -1,7 +1,10 @@
 ﻿@page "/"
 
-@* Inject the ViewInventoriesByNameUseCase use case into our component *@
+@* Inject the ViewInventoriesByNameUseCase use case into our component (for testing) *@
 @inject IViewInventoriesByNameUseCase ViewInventoriesByNameUseCase
+@* Inject the ViewInventoriesByNameUseCase use case into our component (for testing) *@
+@inject IEditInventoryUseCase EditInventoryUseCase
+
 
 @* HTML Section - We can also use Razor syntax which includes C# *@
 <PageTitle>Test Page</PageTitle>
@@ -28,6 +31,10 @@
 
     protected override async Task OnInitializedAsync()
     {
+        var inventory = new Inventory { InventoryID = 2, InventoryName = "Bike Seat", Quantity = 50, Price = 3 };
+
+        await EditInventoryUseCase.ExecuteAsync(inventory);
+
         inventories = (await ViewInventoriesByNameUseCase.ExecuteAsync()).ToList();
         //inventories = (await ViewInventoriesByNameUseCase.ExecuteAsync("whe")).ToList();
         //inventories = (await ViewInventoriesByNameUseCase.ExecuteAsync("xyz")).ToList();
