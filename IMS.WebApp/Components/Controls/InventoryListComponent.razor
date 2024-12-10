@@ -7,6 +7,7 @@
             <th>Quantity</th>
             <th>Price</th>
             <th></th>
+            <th style="text-align: left"></th>
         </tr>
     </thead>
     <tbody>
@@ -25,11 +26,13 @@
     // Declare List of Inventory objects that is nullable (?)
     private List<Inventory>? inventories;
 
-    // Loading the inventories when the component initializes
-    protected override async Task OnInitializedAsync()
+    [Parameter]
+    public string? SearchInventoryFilter { get; set; }
+
+    // Triggered when the routing parameter (SearchInventoryFilter) has been received and assigned
+    protected override async Task OnParametersSetAsync()
     {
-        inventories = (await ViewInventoriesByNameUseCase.ExecuteAsync()).ToList();
-        //inventories = (await ViewInventoriesByNameUseCase.ExecuteAsync("whe")).ToList();
-        //inventories = (await ViewInventoriesByNameUseCase.ExecuteAsync("xyz")).ToList();
+        // ??"" or ??string.Empty - when it is null, set it to an empty string
+        inventories = (await ViewInventoriesByNameUseCase.ExecuteAsync(SearchInventoryFilter ?? "")).ToList();
     }
 }

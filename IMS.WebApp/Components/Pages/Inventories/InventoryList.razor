@@ -4,11 +4,23 @@
 <br />
 <br />
 
-<InventoryListComponent></InventoryListComponent>
+<SearchComponent OnSearch="HandleSearch"></SearchComponent>
+<br />
 
+<InventoryListComponent SearchInventoryFilter="@inventoryNameToSearch"></InventoryListComponent>
 <br />
 <a href="/addinventory" class="btn btn-primary">Add Inventory</a>
 
 @code {
+    private string? inventoryNameToSearch;
+    // We're in the parent component...
+    // So it is HERE where we define the callback function
+    // We supply this function as a component parameter to 
+    // the child component (see above)
+    // This function will be triggered by the child component
+    private void HandleSearch(string searchFilter)
+    {
+        inventoryNameToSearch = searchFilter;
+    }
 
 }

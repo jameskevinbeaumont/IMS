@@ -28,6 +28,7 @@ namespace IMS.Plugins.InMemory
         {
             return await Task.FromResult(_inventories.First(x => x.InventoryID == inventoryID));
         }
+
         public Task UpdateInventoryAsync(Inventory inventory)
         {
             // Defensive programming - here we are checking if the name passed in matches the name
@@ -76,6 +77,18 @@ namespace IMS.Plugins.InMemory
             // If the name is not empty (NULL) or whitspace, then we need to filter the list
             // .Where returns IEnumerable and that is what we want
             return _inventories.Where(x => x.InventoryName.Contains(name, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public Task DeleteInventoryByIDAsync(int inventoryID)
+        {
+            var inventory = _inventories.FirstOrDefault(x  => x.InventoryID == inventoryID);
+
+            if (inventory != null)
+            {
+                _inventories.Remove(inventory);
+            }
+
+            return Task.CompletedTask;
         }
     }
 }

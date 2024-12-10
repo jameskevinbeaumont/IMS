@@ -1,4 +1,6 @@
-﻿
+﻿@inject IDeleteInventoryUseCase DeleteInventoryUseCase
+@inject NavigationManager NavigationManager
+
 @if (this.Inventory is not null)
 {
     <tr>
@@ -11,6 +13,13 @@
                 Edit
             </a>
         </td>
+        <td>
+            <EditForm Enhance="true" Model="Inventory"
+                FormName="@($"form-delete-inventory-{Inventory.InventoryID}")"
+                OnValidSubmit="() => DeleteInventory(Inventory.InventoryID)">
+                <button type="submit" class="btn btn-light">Delete</button>
+            </EditForm>
+        </td>
     </tr>
 }
 
@@ -18,7 +27,13 @@
 
     // In order to make this public property a component parameter
     // we have to use [Parameter]
+    // Routing Parameter
     [Parameter]
     public Inventory? Inventory { get; set; }
 
+    private async Task DeleteInventory(int inventoryID)
+    {
+        await DeleteInventoryUseCase.ExecuteAsync(inventoryID);
+        NavigationManager.Refresh();
+    }
 }
