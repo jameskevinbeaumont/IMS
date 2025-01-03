@@ -1,0 +1,26 @@
+﻿@page "/products"
+
+<h3>Product List</h3>
+<br />
+<br />
+
+<SearchComponent OnSearch="HandleSearch"></SearchComponent>
+<br />
+
+<ProductListComponent SearchProductFilter="@productNameToSearch"></ProductListComponent>
+<br />
+<a href="/addproduct" class="btn btn-primary">Add Product</a>
+
+@code {
+    private string? productNameToSearch;
+    // We're in the parent component...
+    // So it is HERE where we define the callback function
+    // We supply this function as a component parameter to 
+    // the child component (see above)
+    // This function will be triggered by the child component
+    private void HandleSearch(string searchFilter)
+    {
+        productNameToSearch = searchFilter;
+    }
+
+}

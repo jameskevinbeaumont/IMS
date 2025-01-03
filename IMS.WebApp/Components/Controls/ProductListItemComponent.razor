@@ -1,0 +1,43 @@
+﻿@inject NavigationManager NavigationManager
+@inject IDeleteProductUseCase DeleteProductUseCase
+
+@* This is the UI of the component and the UI always reflects the state *@
+@if (this.Product is not null)
+{
+    <tr>
+        <td>@Product.ProductName</td>
+        <td>@Product.Quantity</td>
+        <td>@Product.Price.ToString("c")</td>
+        <td>
+            <a class="btn btn-light" 
+               href="/editproduct/@Product.ProductID">
+                Edit
+            </a>
+        </td>
+        <td>
+            @* Arrow function "() =>" represents a delegate *@
+            @* "async ()" is basically a function and the curly braces contain the content of the function *@
+            <button type="button" class="btn btn-light" @onclick="async () => { await HandleDelete(Product.ProductID); }">Delete</button>
+        </td>
+    </tr>
+}
+
+@code {
+
+    // In order to make this public property a component parameter
+    // we have to use [Parameter]
+    // Routing Parameter aka State Variable
+    [Parameter]
+    public Product? Product { get; set; }
+
+    // With @rendermode = "InteractiveServer", when the button above is clicked, 
+    // there is no HTTP Post, there is no HTTP response...it's directly triggered
+    // like you were calling a JavaScript function
+    private async Task HandleDelete(int productID)
+    {
+        await DeleteProductUseCase.ExecuteAsync(productID);
+        // To affect the HTML above with the deletion of the product, we will set the state variable to NULL
+        Product = null;
+    }
+
+}

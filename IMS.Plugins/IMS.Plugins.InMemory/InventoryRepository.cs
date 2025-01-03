@@ -3,9 +3,9 @@ using IMS.UseCases.PluginInterfaces;
 
 namespace IMS.Plugins.InMemory
 {
-    // If you see a red squiggly line under the interface, it may mean that we are not
-    // this class is not implementing all of the methods defined in the interface.
-    // To fix - Ctrl+"." and hit enter on "Implement interface" - after it implements
+    // If you see a red squiggly line under the interface, it may mean that this 
+    // class is not implementing all of the methods defined in the interface.
+    // To fix - Ctrl+"." and hit enter on "Implement interface..." - after it implements
     // the method here, delete the "throw..." line and write the code to implement the method.
     public class InventoryRepository : IInventoryRepository
     {

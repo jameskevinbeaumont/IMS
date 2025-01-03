@@ -49,7 +49,8 @@
 @code {
     // We need SupplyParameterFromForm attribute to get the data from the form
     // after the submit...but this also requires that our inventory
-    // variable to be a property, so we add the get and the set.
+    // variable to be a property, so we add the get and the set and initialize
+    // as a new Inventory object.
     [SupplyParameterFromForm]
     private Inventory inventory { get; set; } = new Inventory();
 

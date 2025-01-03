@@ -1,0 +1,39 @@
+﻿@inject IViewProductsByNameUseCase ViewProductsByNameUseCase
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th></th>
+            <th style="text-align: left"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (products is not null && products.Count > 0)
+        {
+            foreach (var prod in products)
+            {
+                @* Placing the @rendermode here limits the scope to the component *@
+                <ProductListItemComponent @rendermode="InteractiveServer" Product="prod"></ProductListItemComponent>
+            }
+        }
+
+    </tbody>
+</table>
+
+@code {
+    // Declare List of Product objects that is nullable (?)
+    private List<Product>? products;
+
+    [Parameter]
+    public string? SearchProductFilter { get; set; }
+
+    // Triggered when the routing parameter (SearchProductFilter) has been received and assigned
+    protected override async Task OnParametersSetAsync()
+    {
+        // ??"" or ??string.Empty - when it is null, set it to an empty string
+        products = (await ViewProductsByNameUseCase.ExecuteAsync(SearchProductFilter ?? "")).ToList();
+    }
+}
