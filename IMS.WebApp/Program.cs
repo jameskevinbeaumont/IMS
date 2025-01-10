@@ -49,6 +49,10 @@ builder.Services.AddTransient<IViewProductsByNameUseCase, ViewProductsByNameUseC
 builder.Services.AddTransient<IDeleteProductUseCase, DeleteProductUseCase>();
 // Register the IAddProductUseCase interface and it's implementation (AddProductUseCase)
 builder.Services.AddTransient<IAddProductUseCase, AddProductUseCase>();
+// Register the IViewProductByIDUseCase interface and it's implementation (ViewProductByIDUseCase)
+builder.Services.AddTransient<IViewProductByIDUseCase, ViewProductByIDUseCase>();
+// Register the IEditProductUseCase interface and it's implementation (EditProductUseCase)
+builder.Services.AddTransient<IEditProductUseCase, EditProductUseCase>();
 
 var app = builder.Build();
 

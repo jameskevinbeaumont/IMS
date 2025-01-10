@@ -26,7 +26,16 @@ namespace IMS.Plugins.InMemory
 
         public async Task<Inventory> GetInventoryByIDAsync(int inventoryID)
         {
-            return await Task.FromResult(_inventories.First(x => x.InventoryID == inventoryID));
+            var inv = _inventories.First(x => x.InventoryID == inventoryID);
+            var newInv = new Inventory
+            {
+                InventoryID = inv.InventoryID,
+                InventoryName = inv.InventoryName,
+                Price = inv.Price,
+                Quantity = inv.Quantity
+            };
+
+            return await Task.FromResult(newInv);
         }
 
         public Task UpdateInventoryAsync(Inventory inventory)

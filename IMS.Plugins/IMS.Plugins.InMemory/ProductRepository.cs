@@ -22,48 +22,83 @@ namespace IMS.Plugins.InMemory
             ];
         }
 
-        public async Task<Product> GetProductByIDAsync(int ProductID)
+        public async Task<Product?> GetProductByIDAsync(int productID)
         {
-            return await Task.FromResult(_products.First(x => x.ProductID == ProductID));
-        }
 
-        public Task UpdateProductAsync(Product Product)
+            var prod = _products.FirstOrDefault(x => x.ProductID == productID);
+            var newProd = new Product();
+            if (prod != null)
+            {
+                newProd.ProductID = prod.ProductID;
+                newProd.ProductName = prod.ProductName;
+                newProd.Price = prod.Price;
+                newProd.Quantity = prod.Quantity;
+                newProd.ProductInventories = new List<ProductInventory>();
+                if (prod.ProductInventories != null && prod.ProductInventories.Count > 0)
+                {
+                    foreach(var prodInv in prod.ProductInventories)
+                    {
+                        var newProdInv = new ProductInventory
+                        {
+                            InventoryID = prodInv.InventoryID,
+                            ProductID = prodInv.ProductID,
+                            Product = prod,
+                            Inventory = new Inventory(),
+                            InventoryQuantity = prodInv.InventoryQuantity
+                        };
+                        if (prodInv.Inventory != null)
+                        {
+                            newProdInv.Inventory.InventoryID = prodInv.Inventory.InventoryID;
+                            newProdInv.Inventory.InventoryName = prodInv.Inventory.InventoryName;
+                            newProdInv.Inventory.Price = prodInv.Inventory.Price;
+                            newProdInv.Inventory.Quantity = prodInv.Inventory.Quantity;
+                        }
+
+                        newProd.ProductInventories.Add(newProdInv);
+                    }
+                }
+            }
+
+            return await Task.FromResult(newProd);
+        }
+        public Task UpdateProductAsync(Product product)
         {
             // Defensive programming - here we are checking if the name passed in matches the name
             // on an Product ID that is NOT the Product ID we are updating - we are not allowing
             // the user to change the name of the Product item they are updating with the same name
             // as another Product item that already exists.
-            if (_products.Any(x => x.ProductID != Product.ProductID &&
-                x.ProductName.Equals(Product.ProductName, StringComparison.OrdinalIgnoreCase)))
+            if (_products.Any(x => x.ProductID != product.ProductID &&
+                x.ProductName.ToLower() == product.ProductName.ToLower()))
                 return Task.CompletedTask;
 
             // We are looking for a match in the Product repository based on the Product ID.
-            var prodToUpdate = _products.FirstOrDefault(x => x.ProductID == Product.ProductID);
+            var prodToUpdate = _products.FirstOrDefault(x => x.ProductID == product.ProductID);
             if (prodToUpdate != null)
             {
-                prodToUpdate.ProductName = Product.ProductName;
-                prodToUpdate.Quantity = Product.Quantity;
-                prodToUpdate.Price = Product.Price;
+                prodToUpdate.ProductName = product.ProductName;
+                prodToUpdate.Price = product.Price;
+                prodToUpdate.Quantity = product.Quantity;
+                prodToUpdate.ProductInventories = product.ProductInventories;
             }
 
             return Task.CompletedTask;
         }
 
-        public Task AddProductAsync(Product Product)
+        public Task AddProductAsync(Product product)
         {
             // Defensive programming - the Product passed may have the same name as one that
             // already exists, so we need to check for that.
             // So if it already exists, just return that the task is completed...
-            if (_products.Any(x => x.ProductName.Equals(Product.ProductName, StringComparison.OrdinalIgnoreCase)))
+            if (_products.Any(x => x.ProductName.Equals(product.ProductName, StringComparison.OrdinalIgnoreCase)))
                 return Task.CompletedTask;
 
             // This in memory Product list does not generate ID's automatically so we have to
             // generate the new ID
             var maxID = _products.Max(x => x.ProductID);
-            Product.ProductID = maxID + 1;
+            product.ProductID = maxID + 1;
 
             //...otherwise, add the new Product
-            _products.Add(Product);
+            _products.Add(product);
             return Task.CompletedTask;
         }
 
