@@ -24,8 +24,17 @@ namespace IMS.Plugins.InMemory
 
         public async Task<Product?> GetProductByIDAsync(int productID)
         {
-
+            // When we get the product from the IN MEMORY repository, we are directly returning
+            // the instance in that list, and because that specific product is BOUND to the user
+            // interface. So as soon as the user changes anything in the user interface for this
+            // specific product, it is IMMEDIATELY updated inside the in memory repository...
             var prod = _products.FirstOrDefault(x => x.ProductID == productID);
+            // ...so that is why starting here we have to create a new instance of the product
+            // object, assign all of the values to it, and return that instance back to the 
+            // user interface.
+            // Once we implement Entity Framework Core, we will be connecting to a real database
+            // and this will no longer be an issue. All of THIS code is because we are using
+            // an IN MEMORY data store.
             var newProd = new Product();
             if (prod != null)
             {

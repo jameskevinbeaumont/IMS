@@ -1,23 +1,88 @@
 ﻿@page "/editproduct/{id:int}"
 
+@* What we learn with InteractiveServer, mostly, will also apply to InteractiveWebAssembly *@
 @rendermode InteractiveServer
 
 @inject IViewProductByIDUseCase ViewProductByIDUseCase
+@inject IEditProductUseCase EditProductUseCase
+@inject NavigationManager NavigationManager
 
 <h3>Edit Product</h3>
 <br />
+
+@if (product != null)
+{
+    <EditForm Model="product" FormName="formProduct" OnValidSubmit="Update">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        @* Where you place the ValidationSummary component dictates where the
+    validate messages will be displayed *@
+        <ValidationSummary></ValidationSummary>
+
+        <div class="mb-3">
+            <label for="name">Product Name</label>
+            <InputText id="name"
+                       @bind-Value="product.ProductName"
+                       class="form-control">
+            </InputText>
+            <ValidationMessage For="() => product.ProductName"></ValidationMessage>
+        </div>
+
+        <div class="mb-3">
+            <label for="quantity">Quantity</label>
+            <InputNumber id="quantity"
+                         @bind-Value="product.Quantity"
+                         class="form-control">
+            </InputNumber>
+            <ValidationMessage For="() => product.Quantity"></ValidationMessage>
+        </div>
+
+        <div class="mb-3">
+            <label for="price">Price</label>
+            <InputNumber id="price"
+                         @bind-Value="product.Price"
+                         class="form-control">
+            </InputNumber>
+            <ValidationMessage For="() => product.Price"></ValidationMessage>
+
+        </div>
+
+        <div class="mb-3">
+            <label>Inventories</label>
+            <ProductInventoriesComponent Product="this.product"></ProductInventoriesComponent>
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary">Update</button>&nbsp;
+        @* You could implement the following with a <button type="button"... 
+           and then in the click event handler implement another function below (in @code)
+           and call NavigationManager.NavigateTo("/products") *@
+        <a href="/products" class="btn btn-primary">Cancel</a>
+    </EditForm>
+
+}
 
 
 @code {
     // State variable
     private Product? product;
 
+    // Routing parameter - must be a property
     [Parameter]
     public int ID { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
+        // This is a razor component and one of the KEY factors of 
+        // a razor component is the STATE, so we need to assign the
+        // results of this method call to a STATE VARIABLE
         product = await ViewProductByIDUseCase.ExecuteAsync(ID); 
     }
 
+    private async Task Update()
+    {
+        if (product != null)
+        {
+            await EditProductUseCase.ExecuteAsync(product);
+            NavigationManager.NavigateTo("/products");
+        }
+    }
 }
