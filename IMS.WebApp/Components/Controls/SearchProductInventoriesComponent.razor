@@ -15,7 +15,7 @@
             @foreach (var inv in inventories)
             {
                 @* Adding the key here gives Blazor a unique value it can look at to keep from *@
-                @* rendering the list in its entirelty everytime the Search button is clicked *@
+                @* rendering the list in its entirety everytime the Search button is clicked *@
                 @* => (arrow function) states that we are going to provide a delegate (HandleSelectInventory) *@
                 <li @key="inv.InventoryID" @onclick="() => { HandleSelectInventory(inv); }">
                     @inv.InventoryName

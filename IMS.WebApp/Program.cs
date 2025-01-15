@@ -1,6 +1,8 @@
 // This is a console application that runs line by line
 // FIRST
 using IMS.Plugins.InMemory;
+using IMS.UseCases.Activities;
+using IMS.UseCases.Activities.Interfaces;
 using IMS.UseCases.Inventories;
 using IMS.UseCases.Inventories.Interfaces;
 using IMS.UseCases.PluginInterfaces;
@@ -26,6 +28,9 @@ builder.Services.AddSingleton<IInventoryRepository, InventoryRepository>();
 // Product Repository
 // Register the IProductRepository interface and it's implementation (ProductRepository)
 builder.Services.AddSingleton<IProductRepository, ProductRepository>();
+// Inventory Transaction Repository
+// Register the IInventoryTransactionRepository interface and it's implementation (InventoryTransactionRepository)
+builder.Services.AddSingleton<IInventoryTransactionRepository, InventoryTransactionRepository>();
 
 // Inventories
 // Register the IViewInventoriesByNameUseCase interface and it's implementation (ViewInventoriesByNameUseCase)
@@ -53,6 +58,10 @@ builder.Services.AddTransient<IAddProductUseCase, AddProductUseCase>();
 builder.Services.AddTransient<IViewProductByIDUseCase, ViewProductByIDUseCase>();
 // Register the IEditProductUseCase interface and it's implementation (EditProductUseCase)
 builder.Services.AddTransient<IEditProductUseCase, EditProductUseCase>();
+
+// Activities
+// Register the IPurchaseInventoryUseCase interface and it's implementation (PurchaseInventoryUseCase)
+builder.Services.AddTransient<IPurchaseInventoryUseCase, PurchaseInventoryUseCase>();
 
 var app = builder.Build();
 
